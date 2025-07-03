@@ -83,24 +83,24 @@ describe('TwilioSendGrid Class', function () {
 
     });
 
-});
+    describe('Campaign and Segment Logic', function () {
 
-describe('Campaign and Segment Logic', function () {
+        it('should create segment and campaign, then schedule it', async function () {
+            const list = await TwilioSendGrid.ensureSenderListExists(senderId);
 
-    it('should create segment and campaign, then schedule it', async function () {
-        const list = await TwilioSendGrid.ensureSenderListExists(senderId);
+            const result = await TwilioSendGrid.sendCampaignEmail({
+                listId: list.id,
+                tag: 'weekly_newsletter',
+                templateKey: 'creator-broadcast',
+                dynamicData: { senderId },
+                sendAt: 'now' // or set a future timestamp if needed
+            });
 
-        const result = await TwilioSendGrid.sendCampaignEmail({
-            listId: list.id,
-            tag: 'weekly_newsletter',
-            templateKey: 'creator-broadcast',
-            dynamicData: { senderId },
-            sendAt: 'now' // or set a future timestamp if needed
+            expect(result).to.be.an('object');
+            expect(result).to.have.property('campaignId');
+            expect(result).to.have.property('segmentId');
         });
 
-        expect(result).to.be.an('object');
-        expect(result).to.have.property('campaignId');
-        expect(result).to.have.property('segmentId');
     });
 
 });
